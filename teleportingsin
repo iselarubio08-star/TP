@@ -1,0 +1,59 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Crear interfaz
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "MenuFlotante"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Botón flotante
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 180, 0, 50)
+button.Position = UDim2.new(0, 20, 0.5, -25)
+button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+button.Text = "🔥🔝 "
+button.TextScaled = true
+button.Font = Enum.Font.GothamBold
+button.Parent = screenGui
+
+-- Hacer el botón arrastrable
+button.Active = true
+button.Draggable = true
+
+-- Borde arcoíris
+local stroke = Instance.new("UIStroke")
+stroke.Thickness = 3
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+stroke.Parent = button
+
+-- Esquinas redondeadas
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = button
+
+-- Coordenadas destino
+local destino = Vector3.new(-6511.84, 273.48, -15757.45)
+
+button.MouseButton1Click:Connect(function()
+	local character = player.Character or player.CharacterAdded:Wait()
+	local root = character:FindFirstChild("HumanoidRootPart")
+
+	if root then
+		root.CFrame = CFrame.new(destino)
+	end
+end)
+
+-- Efecto Rainbow para borde y letras
+local hue = 0
+
+RunService.RenderStepped:Connect(function(dt)
+	hue = (hue + dt * 0.35) % 1
+	local color = Color3.fromHSV(hue, 1, 1)
+
+	stroke.Color = color
+	button.TextColor3 = color
+end)
